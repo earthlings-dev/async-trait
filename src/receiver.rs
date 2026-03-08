@@ -147,12 +147,11 @@ impl VisitMut for ReplaceSelf {
         // appear syntactically like an item despite expanding to an expression.
         //
         // Otherwise, do not recurse into nested items.
-        if let Item::Macro(i) = i {
-            if i.mac.path.is_ident("macro_rules")
-                || i.mac.path.segments.last().unwrap().ident == "select"
-            {
-                self.visit_macro_mut(&mut i.mac);
-            }
+        if let Item::Macro(i) = i
+            && (i.mac.path.is_ident("macro_rules")
+                || i.mac.path.segments.last().unwrap().ident == "select")
+        {
+            self.visit_macro_mut(&mut i.mac);
         }
     }
 

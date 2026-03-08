@@ -534,7 +534,7 @@ pub mod issue45 {
     use tracing::event::Event;
     use tracing::field::{Field, Visit};
     use tracing::span::{Attributes, Id, Record};
-    use tracing::{info, instrument, subscriber, Metadata, Subscriber};
+    use tracing::{Metadata, Subscriber, info, instrument, subscriber};
 
     #[async_trait]
     pub trait Parent {

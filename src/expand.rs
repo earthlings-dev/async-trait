@@ -1,18 +1,18 @@
-use crate::bound::{has_bound, InferredBound, Supertraits};
+use crate::bound::{InferredBound, Supertraits, has_bound};
 use crate::lifetime::{AddLifetimeToImplTrait, CollectLifetimes};
 use crate::parse::Item;
-use crate::receiver::{has_self_in_block, has_self_in_sig, mut_pat, ReplaceSelf};
+use crate::receiver::{ReplaceSelf, has_self_in_block, has_self_in_sig, mut_pat};
 use crate::verbatim::VerbatimFn;
 use proc_macro2::{Span, TokenStream};
-use quote::{format_ident, quote, quote_spanned, ToTokens};
+use quote::{ToTokens, format_ident, quote, quote_spanned};
 use std::collections::BTreeSet as Set;
 use std::mem;
 use syn::punctuated::Punctuated;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
-    parse_quote, parse_quote_spanned, Attribute, Block, FnArg, GenericArgument, GenericParam,
-    Generics, Ident, ImplItem, Lifetime, LifetimeParam, Pat, PatIdent, PathArguments, Receiver,
-    ReturnType, Signature, Token, TraitItem, Type, TypeInfer, TypePath, WhereClause,
+    Attribute, Block, FnArg, GenericArgument, GenericParam, Generics, Ident, ImplItem, Lifetime,
+    LifetimeParam, Pat, PatIdent, PathArguments, Receiver, ReturnType, Signature, Token, TraitItem,
+    Type, TypeInfer, TypePath, WhereClause, parse_quote, parse_quote_spanned,
 };
 
 impl ToTokens for Item {
@@ -43,10 +43,10 @@ impl Context<'_> {
             Context::Impl { impl_generics, .. } => impl_generics,
         };
         generics.params.iter().filter_map(move |param| {
-            if let GenericParam::Lifetime(param) = param {
-                if used.contains(&param.lifetime) {
-                    return Some(param);
-                }
+            if let GenericParam::Lifetime(param) = param
+                && used.contains(&param.lifetime)
+            {
+                return Some(param);
             }
             None
         })
@@ -83,10 +83,10 @@ pub fn expand(input: &mut Item, is_local: bool) {
         Item::Impl(input) => {
             let mut associated_type_impl_traits = Set::new();
             for inner in &input.items {
-                if let ImplItem::Type(assoc) = inner {
-                    if let Type::ImplTrait(_) = assoc.ty {
-                        associated_type_impl_traits.insert(assoc.ident.clone());
-                    }
+                if let ImplItem::Type(assoc) = inner
+                    && let Type::ImplTrait(_) = assoc.ty
+                {
+                    associated_type_impl_traits.insert(assoc.ident.clone());
                 }
             }
 

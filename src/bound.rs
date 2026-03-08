@@ -1,5 +1,5 @@
 use proc_macro2::{Ident, Span, TokenStream};
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use syn::punctuated::Punctuated;
 use syn::{Token, TypeParamBound};
 
@@ -12,16 +12,15 @@ pub enum InferredBound {
 
 pub fn has_bound(supertraits: &Supertraits, bound: &InferredBound) -> bool {
     for supertrait in supertraits {
-        if let TypeParamBound::Trait(supertrait) = supertrait {
-            if supertrait.path.is_ident(bound)
+        if let TypeParamBound::Trait(supertrait) = supertrait
+            && (supertrait.path.is_ident(bound)
                 || supertrait.path.segments.len() == 3
                     && (supertrait.path.segments[0].ident == "std"
                         || supertrait.path.segments[0].ident == "core")
                     && supertrait.path.segments[1].ident == "marker"
-                    && supertrait.path.segments[2].ident == *bound
-            {
-                return true;
-            }
+                    && supertrait.path.segments[2].ident == *bound)
+        {
+            return true;
         }
     }
     false

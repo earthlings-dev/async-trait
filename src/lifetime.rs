@@ -2,8 +2,8 @@ use proc_macro2::{Span, TokenStream};
 use std::mem;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
-    parse_quote_spanned, token, Expr, GenericArgument, Lifetime, Receiver, ReturnType, Token, Type,
-    TypeBareFn, TypeImplTrait, TypeParen, TypePtr, TypeReference,
+    Expr, GenericArgument, Lifetime, Receiver, ReturnType, Token, Type, TypeBareFn, TypeImplTrait,
+    TypeParen, TypePtr, TypeReference, parse_quote_spanned, token,
 };
 
 pub struct CollectLifetimes {
@@ -56,11 +56,11 @@ impl VisitMut for CollectLifetimes {
         visit_mut::visit_type_reference_mut(self, ty);
     }
 
-    fn visit_generic_argument_mut(&mut self, gen: &mut GenericArgument) {
-        if let GenericArgument::Lifetime(lifetime) = gen {
+    fn visit_generic_argument_mut(&mut self, arg: &mut GenericArgument) {
+        if let GenericArgument::Lifetime(lifetime) = arg {
             self.visit_lifetime(lifetime);
         }
-        visit_mut::visit_generic_argument_mut(self, gen);
+        visit_mut::visit_generic_argument_mut(self, arg);
     }
 }
 

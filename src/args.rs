@@ -1,6 +1,6 @@
 use proc_macro2::Span;
-use syn::parse::{Error, Parse, ParseStream, Result};
 use syn::Token;
+use syn::parse::{Error, Parse, ParseStream, Result};
 
 #[derive(Copy, Clone)]
 pub struct Args {
